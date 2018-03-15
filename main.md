@@ -29,78 +29,19 @@ df_minus_duplicate_names = dataframe.drop_duplicates(subset=["SN"])
 
 
 ```python
-#TOTAL NUMBER OF PLAYERS
+#Total Number of Unique Players
 totalplayers = dataframe["SN"].nunique()
-totalplayers
-```
-
-
-
-
-    573
-
-
-
-
-```python
 #Number of Unique Items
 uniqueitems = dataframe["Item ID"].nunique()
-uniqueitems
-```
-
-
-
-
-    183
-
-
-
-
-```python
 #Total Revenue
 revenue = dataframe["Price"].sum()
-revenue
-```
-
-
-
-
-    2286.33
-
-
-
-
-```python
 #Total Number of Purchases
 purchases = len(dataframe)
-purchases
-```
-
-
-
-
-    780
-
-
-
-
-```python
 #Average Purchase Price
 avgpurchaseprice = round(revenue/purchases,2)
-avgpurchaseprice
-```
-
-
-
-
-    2.93
-
-
-
-
-```python
 overview = {"Total Players":totalplayers,"Unique Items":uniqueitems,"Revenue":revenue,"Purchases":purchases,"Average Purchase Price":avgpurchaseprice}
 overview_df = pd.Series(overview).to_frame()
+overview_df.columns = [" "]
 overview_df
 ```
 
@@ -125,7 +66,7 @@ overview_df
   <thead>
     <tr style="text-align: right;">
       <th></th>
-      <th>0</th>
+      <th></th>
     </tr>
   </thead>
   <tbody>
@@ -162,7 +103,7 @@ df_male = dataframe.loc[dataframe["Gender"]=="Male",:]
 df_male_minus_duplicates = df_male.drop_duplicates(subset=["SN"])
 df_female = dataframe.loc[dataframe["Gender"]=="Female",:]
 df_female_minus_duplicates = df_female.drop_duplicates(subset=["SN"])
-df_other = dataframe.loc[~dataframe["Gender"].isin(["Male","Female"]),:]# and dataframe["Gender"]!="Female",:]
+df_other = dataframe.loc[~dataframe["Gender"].isin(["Male","Female"]),:]
 df_other_minus_duplicates = df_other.drop_duplicates(subset=["SN"])
 ```
 
@@ -237,8 +178,6 @@ avg_price_o = round(df_other["Price"].mean(),2)
 tot_price_m = round(df_male["Price"].sum(),2)
 tot_price_f = round(df_female["Price"].sum(),2)
 tot_price_o = round(df_other["Price"].sum(),2)
-#Normalized Totals by gender
-
 
 genderlist = ["Male","Female","Other"]
 genderpcount = [purchase_count_m,purchase_count_f,purchase_count_o]
@@ -251,13 +190,12 @@ totpricedf["Purchase Count"]=genderpcount
 totpricedf["Average Purchase"]=genderpprice
 totpricedf["Total Purchase Value"] = gendertprice
 totpricedf["Normalized Totals"]=""
-totpricedf
 
 x = totpricedf[["Total Purchase Value"]].values.astype(float)
 scaler=preprocessing.MinMaxScaler()
 xscale=scaler.fit_transform(x)
 totpricedf["Normalized Totals"]=pd.DataFrame(xscale)
-totpricedf
+totpricedf.set_index(["Gender"])
 ```
 
 
@@ -281,33 +219,36 @@ totpricedf
   <thead>
     <tr style="text-align: right;">
       <th></th>
-      <th>Gender</th>
       <th>Purchase Count</th>
       <th>Average Purchase</th>
       <th>Total Purchase Value</th>
       <th>Normalized Totals</th>
     </tr>
+    <tr>
+      <th>Gender</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
   </thead>
   <tbody>
     <tr>
-      <th>0</th>
-      <td>Male</td>
+      <th>Male</th>
       <td>633</td>
       <td>2.95</td>
       <td>1867.68</td>
       <td>1.000000</td>
     </tr>
     <tr>
-      <th>1</th>
-      <td>Female</td>
+      <th>Female</th>
       <td>136</td>
       <td>2.82</td>
       <td>382.91</td>
       <td>0.189509</td>
     </tr>
     <tr>
-      <th>2</th>
-      <td>Other</td>
+      <th>Other</th>
       <td>11</td>
       <td>3.25</td>
       <td>35.74</td>
@@ -332,6 +273,15 @@ dataframe["AgeGroups"]=agegroups[0]
 
 
 ```python
+
+df00to09 = dataframe.loc[dataframe["AgeGroups"]=="00-09",:]
+df10to14 = dataframe.loc[dataframe["AgeGroups"]=="10-14",:]
+df15to19 = dataframe.loc[dataframe["AgeGroups"]=="15-19",:]
+df20to24 = dataframe.loc[dataframe["AgeGroups"]=="20-24",:]
+df25to29 = dataframe.loc[dataframe["AgeGroups"]=="25-29",:]
+df30to34 = dataframe.loc[dataframe["AgeGroups"]=="30-34",:]
+df35to39 = dataframe.loc[dataframe["AgeGroups"]=="35-39",:]
+df40up = dataframe.loc[dataframe["AgeGroups"]=="40+",:]
 
 #Purchase Count by age group
 pcount00to09 = len(df00to09)
@@ -366,26 +316,10 @@ totprice40up = round(df40up["Price"].sum(),2)
 
 tprice = pd.DataFrame([totprice00to09,totprice10to14,totprice15to19,totprice20to24,totprice25to29,totprice30to34,totprice35to39,totprice40up])
 
-#Normalized Totals by gender
-
-
-
-
-
 ```
 
 
 ```python
-
-df00to09 = dataframe.loc[dataframe["AgeGroups"]=="00-09",:]
-df10to14 = dataframe.loc[dataframe["AgeGroups"]=="10-14",:]
-df15to19 = dataframe.loc[dataframe["AgeGroups"]=="15-19",:]
-df20to24 = dataframe.loc[dataframe["AgeGroups"]=="20-24",:]
-df25to29 = dataframe.loc[dataframe["AgeGroups"]=="25-29",:]
-df30to34 = dataframe.loc[dataframe["AgeGroups"]=="30-34",:]
-df35to39 = dataframe.loc[dataframe["AgeGroups"]=="35-39",:]
-df40up = dataframe.loc[dataframe["AgeGroups"]=="40+",:]
-
 agegroupdata = pd.DataFrame(dataframe["AgeGroups"].value_counts()).reset_index().sort_values("index",ascending=True)
 #agegroupdata.columns = ["AgeGroups","Purchase Count","Average Purchase Price","Total Purchase Price","Normalized Totals"]
 agegroupdata.columns = ["AgeGroups","Purchase Count"]
@@ -397,7 +331,7 @@ x = agegroupdata[["Total Purchase Price"]].values.astype(float)
 scaler=preprocessing.MinMaxScaler()
 xscale=scaler.fit_transform(x)
 agegroupdata["Normalized Totals"]=pd.DataFrame(xscale)
-agegroupdata
+agegroupdata.set_index("AgeGroups")
 ```
 
 
@@ -421,73 +355,71 @@ agegroupdata
   <thead>
     <tr style="text-align: right;">
       <th></th>
-      <th>AgeGroups</th>
       <th>Purchase Count</th>
       <th>Average Purchase Price</th>
       <th>Total Purchase Price</th>
       <th>Normalized Totals</th>
     </tr>
+    <tr>
+      <th>AgeGroups</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
   </thead>
   <tbody>
     <tr>
-      <th>6</th>
-      <td>00-09</td>
+      <th>00-09</th>
       <td>28</td>
       <td>2.84</td>
       <td>119.40</td>
       <td>0.342241</td>
     </tr>
     <tr>
-      <th>5</th>
-      <td>10-14</td>
+      <th>10-14</th>
       <td>35</td>
       <td>3.08</td>
       <td>197.25</td>
       <td>1.000000</td>
     </tr>
     <tr>
-      <th>1</th>
-      <td>15-19</td>
+      <th>15-19</th>
       <td>133</td>
       <td>2.77</td>
       <td>96.95</td>
       <td>0.155132</td>
     </tr>
     <tr>
-      <th>0</th>
-      <td>20-24</td>
+      <th>20-24</th>
       <td>336</td>
       <td>2.98</td>
       <td>83.46</td>
       <td>0.070971</td>
     </tr>
     <tr>
-      <th>2</th>
-      <td>25-29</td>
+      <th>25-29</th>
       <td>125</td>
       <td>2.91</td>
       <td>386.42</td>
       <td>0.046702</td>
     </tr>
     <tr>
-      <th>3</th>
-      <td>30-34</td>
+      <th>30-34</th>
       <td>64</td>
       <td>2.91</td>
       <td>978.77</td>
       <td>0.032118</td>
     </tr>
     <tr>
-      <th>4</th>
-      <td>35-39</td>
+      <th>35-39</th>
       <td>42</td>
       <td>2.96</td>
       <td>370.33</td>
       <td>0.359635</td>
     </tr>
     <tr>
-      <th>7</th>
-      <td>40+</td>
+      <th>40+</th>
       <td>17</td>
       <td>3.16</td>
       <td>53.75</td>
@@ -609,7 +541,7 @@ topspendersoutputdf = pd.DataFrame({"SN": top5spendersnames})
 topspendersoutputdf["Purchase Count"] = top5purchasecount["SN"]
 output_top_spenders = pd.merge(topspendersoutputdf,sortedtop5totalvalue,on="SN")
 output_top_spenders["Average Purchase Price"] = round(output_top_spenders["Price"]/output_top_spenders["Purchase Count"],2)
-output_top_spenders #FINAL RESULT
+output_top_spenders.set_index(["SN"])
 ```
 
 
@@ -633,44 +565,44 @@ output_top_spenders #FINAL RESULT
   <thead>
     <tr style="text-align: right;">
       <th></th>
-      <th>SN</th>
       <th>Purchase Count</th>
       <th>Price</th>
       <th>Average Purchase Price</th>
     </tr>
+    <tr>
+      <th>SN</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
   </thead>
   <tbody>
     <tr>
-      <th>0</th>
-      <td>Undirrala66</td>
+      <th>Undirrala66</th>
       <td>5</td>
       <td>17.06</td>
       <td>3.41</td>
     </tr>
     <tr>
-      <th>1</th>
-      <td>Saedue76</td>
+      <th>Saedue76</th>
       <td>4</td>
       <td>13.56</td>
       <td>3.39</td>
     </tr>
     <tr>
-      <th>2</th>
-      <td>Mindimnya67</td>
+      <th>Mindimnya67</th>
       <td>4</td>
       <td>12.74</td>
       <td>3.18</td>
     </tr>
     <tr>
-      <th>3</th>
-      <td>Haellysu29</td>
+      <th>Haellysu29</th>
       <td>3</td>
       <td>12.73</td>
       <td>4.24</td>
     </tr>
     <tr>
-      <th>4</th>
-      <td>Eoda93</td>
+      <th>Eoda93</th>
       <td>3</td>
       <td>11.58</td>
       <td>3.86</td>
@@ -685,65 +617,7 @@ output_top_spenders #FINAL RESULT
 ```python
 itemcounts = dataframe["Item ID"].value_counts().reset_index()
 itemcounts.columns= ["Item ID","Count"]
-itemcounts.head()
 ```
-
-
-
-
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>Item ID</th>
-      <th>Count</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>84</td>
-      <td>11</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>39</td>
-      <td>11</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>31</td>
-      <td>9</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>34</td>
-      <td>9</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>175</td>
-      <td>9</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-
 
 
 ```python
@@ -766,7 +640,7 @@ grouptop5df.columns=["Item ID","Total Purchase Value"]
 outputpart1 = sorteditemgroup[["Item ID","Item Name","Price"]]
 outputpart2 = pd.merge(outputpart1,top5itemsdf,on="Item ID")
 output_most_popular = pd.merge(outputpart2,grouptop5df,on="Item ID")
-output_most_popular #FINAL RESULT
+output_most_popular.set_index(["Item ID"]) #FINAL RESULT
 ```
 
 
@@ -790,49 +664,50 @@ output_most_popular #FINAL RESULT
   <thead>
     <tr style="text-align: right;">
       <th></th>
-      <th>Item ID</th>
       <th>Item Name</th>
       <th>Price</th>
       <th>Count</th>
       <th>Total Purchase Value</th>
     </tr>
+    <tr>
+      <th>Item ID</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
   </thead>
   <tbody>
     <tr>
-      <th>0</th>
-      <td>39</td>
+      <th>39</th>
       <td>Betrayal, Whisper of Grieving Widows</td>
       <td>2.35</td>
       <td>11</td>
       <td>25.85</td>
     </tr>
     <tr>
-      <th>1</th>
-      <td>84</td>
+      <th>84</th>
       <td>Arcane Gem</td>
       <td>2.23</td>
       <td>11</td>
       <td>24.53</td>
     </tr>
     <tr>
-      <th>2</th>
-      <td>34</td>
+      <th>34</th>
       <td>Retribution Axe</td>
       <td>4.14</td>
       <td>9</td>
       <td>37.26</td>
     </tr>
     <tr>
-      <th>3</th>
-      <td>31</td>
+      <th>31</th>
       <td>Trickster</td>
       <td>2.07</td>
       <td>9</td>
       <td>18.63</td>
     </tr>
     <tr>
-      <th>4</th>
-      <td>13</td>
+      <th>13</th>
       <td>Serenity</td>
       <td>1.49</td>
       <td>9</td>
@@ -860,7 +735,7 @@ profitdf.columns=["Total Purchase Value"]
 profitdf = profitdf.reset_index()
 sortprofit=profitdf.sort_values("Total Purchase Value",ascending=False).head()
 output_most_profit = pd.merge(sortprofit,itemcounts,on="Item ID",how="inner")
-output_most_profit #FINAL RESULT
+output_most_profit.set_index(["Item ID"]) #FINAL RESULT
 ```
 
 
@@ -884,49 +759,50 @@ output_most_profit #FINAL RESULT
   <thead>
     <tr style="text-align: right;">
       <th></th>
-      <th>Item ID</th>
       <th>Item Name</th>
       <th>Price</th>
       <th>Total Purchase Value</th>
       <th>Count</th>
     </tr>
+    <tr>
+      <th>Item ID</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
   </thead>
   <tbody>
     <tr>
-      <th>0</th>
-      <td>34</td>
+      <th>34</th>
       <td>Retribution Axe</td>
       <td>4.14</td>
       <td>37.26</td>
       <td>9</td>
     </tr>
     <tr>
-      <th>1</th>
-      <td>115</td>
+      <th>115</th>
       <td>Spectral Diamond Doomblade</td>
       <td>4.25</td>
       <td>29.75</td>
       <td>7</td>
     </tr>
     <tr>
-      <th>2</th>
-      <td>32</td>
+      <th>32</th>
       <td>Orenmir</td>
       <td>4.95</td>
       <td>29.70</td>
       <td>6</td>
     </tr>
     <tr>
-      <th>3</th>
-      <td>103</td>
+      <th>103</th>
       <td>Singed Scalpel</td>
       <td>4.87</td>
       <td>29.22</td>
       <td>6</td>
     </tr>
     <tr>
-      <th>4</th>
-      <td>107</td>
+      <th>107</th>
       <td>Splitter, Foe Of Subtlety</td>
       <td>3.61</td>
       <td>28.88</td>
