@@ -1,9 +1,19 @@
 
 
 ```python
+##OBSERVED TREND 1:
+
+##OBSERVED TREND 2:
+
+##OBSERVED TREND 3:
+
+```
+
+
+```python
 import pandas as pd
 import json
-
+from sklearn import preprocessing
 ```
 
 
@@ -15,89 +25,7 @@ dataframe=pd.DataFrame(data)
 
 ```python
 df_minus_duplicate_names = dataframe.drop_duplicates(subset=["SN"])
-df_minus_duplicate_names.head()
 ```
-
-
-
-
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>Age</th>
-      <th>Gender</th>
-      <th>Item ID</th>
-      <th>Item Name</th>
-      <th>Price</th>
-      <th>SN</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>38</td>
-      <td>Male</td>
-      <td>165</td>
-      <td>Bone Crushing Silver Skewer</td>
-      <td>3.37</td>
-      <td>Aelalis34</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>21</td>
-      <td>Male</td>
-      <td>119</td>
-      <td>Stormbringer, Dark Blade of Ending Misery</td>
-      <td>2.32</td>
-      <td>Eolo46</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>34</td>
-      <td>Male</td>
-      <td>174</td>
-      <td>Primitive Blade</td>
-      <td>2.46</td>
-      <td>Assastnya25</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>21</td>
-      <td>Male</td>
-      <td>92</td>
-      <td>Final Critic</td>
-      <td>1.36</td>
-      <td>Pheusrical25</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>23</td>
-      <td>Male</td>
-      <td>63</td>
-      <td>Stormfury Mace</td>
-      <td>1.27</td>
-      <td>Aela59</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-
 
 
 ```python
@@ -171,52 +99,60 @@ avgpurchaseprice
 
 
 ```python
-
+overview = {"Total Players":totalplayers,"Unique Items":uniqueitems,"Revenue":revenue,"Purchases":purchases,"Average Purchase Price":avgpurchaseprice}
+overview_df = pd.Series(overview).to_frame()
+overview_df
 ```
 
 
-    ---------------------------------------------------------------------------
 
-    ValueError                                Traceback (most recent call last)
 
-    <ipython-input-10-009b01fae4db> in <module>()
-    ----> 1 outdf = pd.DataFrame({".":""})
-          2 outdf
-    
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
 
-    ~\Anaconda3\envs\PythonData\lib\site-packages\pandas\core\frame.py in __init__(self, data, index, columns, dtype, copy)
-        328                                  dtype=dtype, copy=copy)
-        329         elif isinstance(data, dict):
-    --> 330             mgr = self._init_dict(data, index, columns, dtype=dtype)
-        331         elif isinstance(data, ma.MaskedArray):
-        332             import numpy.ma.mrecords as mrecords
-    
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
 
-    ~\Anaconda3\envs\PythonData\lib\site-packages\pandas\core\frame.py in _init_dict(self, data, index, columns, dtype)
-        459             arrays = [data[k] for k in keys]
-        460 
-    --> 461         return _arrays_to_mgr(arrays, data_names, index, columns, dtype=dtype)
-        462 
-        463     def _init_ndarray(self, values, index, columns, dtype=None, copy=False):
-    
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>0</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Average Purchase Price</th>
+      <td>2.93</td>
+    </tr>
+    <tr>
+      <th>Purchases</th>
+      <td>780.00</td>
+    </tr>
+    <tr>
+      <th>Revenue</th>
+      <td>2286.33</td>
+    </tr>
+    <tr>
+      <th>Total Players</th>
+      <td>573.00</td>
+    </tr>
+    <tr>
+      <th>Unique Items</th>
+      <td>183.00</td>
+    </tr>
+  </tbody>
+</table>
+</div>
 
-    ~\Anaconda3\envs\PythonData\lib\site-packages\pandas\core\frame.py in _arrays_to_mgr(arrays, arr_names, index, columns, dtype)
-       6161     # figure out the index, if necessary
-       6162     if index is None:
-    -> 6163         index = extract_index(arrays)
-       6164     else:
-       6165         index = _ensure_index(index)
-    
-
-    ~\Anaconda3\envs\PythonData\lib\site-packages\pandas\core\frame.py in extract_index(data)
-       6200 
-       6201         if not indexes and not raw_lengths:
-    -> 6202             raise ValueError('If using all scalar values, you must pass'
-       6203                              ' an index')
-       6204 
-    
-
-    ValueError: If using all scalar values, you must pass an index
 
 
 
@@ -233,8 +169,59 @@ df_other_minus_duplicates = df_other.drop_duplicates(subset=["SN"])
 
 ```python
 #numbers of each gender
-print("Males:", len(df_male_minus_duplicates), "\nFemales:", len(df_female_minus_duplicates), "\nOthers:", len(df_other_minus_duplicates))
+gender_breakdown = {"Males":len(df_male_minus_duplicates), "Females":len(df_female_minus_duplicates), "Others":len(df_other_minus_duplicates)}
+gender_df = pd.Series(gender_breakdown).to_frame()
+gender_df["% of players"] = [len(df_male_minus_duplicates)/totalplayers*100,len(df_female_minus_duplicates)/totalplayers*100,len(df_other_minus_duplicates)/totalplayers*100]
+gender_df.columns=["Player Count","% of all players"]
+gender_df
 ```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Player Count</th>
+      <th>% of all players</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Females</th>
+      <td>100</td>
+      <td>81.151832</td>
+    </tr>
+    <tr>
+      <th>Males</th>
+      <td>465</td>
+      <td>17.452007</td>
+    </tr>
+    <tr>
+      <th>Others</th>
+      <td>8</td>
+      <td>1.396161</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
 
 
 ```python
@@ -265,7 +252,72 @@ totpricedf["Average Purchase"]=genderpprice
 totpricedf["Total Purchase Value"] = gendertprice
 totpricedf["Normalized Totals"]=""
 totpricedf
+
+x = totpricedf[["Total Purchase Value"]].values.astype(float)
+scaler=preprocessing.MinMaxScaler()
+xscale=scaler.fit_transform(x)
+totpricedf["Normalized Totals"]=pd.DataFrame(xscale)
+totpricedf
 ```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Gender</th>
+      <th>Purchase Count</th>
+      <th>Average Purchase</th>
+      <th>Total Purchase Value</th>
+      <th>Normalized Totals</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Male</td>
+      <td>633</td>
+      <td>2.95</td>
+      <td>1867.68</td>
+      <td>1.000000</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Female</td>
+      <td>136</td>
+      <td>2.82</td>
+      <td>382.91</td>
+      <td>0.189509</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Other</td>
+      <td>11</td>
+      <td>3.25</td>
+      <td>35.74</td>
+      <td>0.000000</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
 
 
 ```python
@@ -275,28 +327,7 @@ bins=[0,10,15,20,25,30,35,40,2000]
 labels=['00-09','10-14','15-19','20-24','25-29','30-34','35-39','40+']
 agegroups = pd.cut(dataframe["Age"],bins,labels=labels,include_lowest=True,retbins=True,right=False)
 dataframe["AgeGroups"]=agegroups[0]
-dataframe.head()
 
-```
-
-
-```python
-
-
-df00to09 = dataframe.loc[dataframe["AgeGroups"]=="00-09",:]
-df10to14 = dataframe.loc[dataframe["AgeGroups"]=="10-14",:]
-df15to19 = dataframe.loc[dataframe["AgeGroups"]=="15-19",:]
-df20to24 = dataframe.loc[dataframe["AgeGroups"]=="20-24",:]
-df25to29 = dataframe.loc[dataframe["AgeGroups"]=="25-29",:]
-df30to34 = dataframe.loc[dataframe["AgeGroups"]=="30-34",:]
-df35to39 = dataframe.loc[dataframe["AgeGroups"]=="35-39",:]
-df40up = dataframe.loc[dataframe["AgeGroups"]=="40+",:]
-
-
-agegroupdata = pd.DataFrame(dataframe["AgeGroups"].value_counts()).reset_index().sort_values("index",ascending=True)
-agegroupdata= agegroupdata.drop("AgeGroups",1)
-#agegroupdata.columns = ["AgeGroups","Purchase Count","Average Purchase Price","Total Purchase Price","Normalized Totals"]
-agegroupdata
 ```
 
 
@@ -321,7 +352,7 @@ avgprice25to29 = round(df25to29["Price"].mean(),2)
 avgprice30to34 = round(df30to34["Price"].mean(),2)
 avgprice35to39 = round(df35to39["Price"].mean(),2)
 avgprice40up = round(df40up["Price"].mean(),2)
-
+pprice = pd.DataFrame([avgprice00to09,avgprice10to14,avgprice15to19,avgprice20to24,avgprice25to29,avgprice30to34,avgprice35to39,avgprice40up])
 
 #Total Purchase Value by gender
 totprice00to09 = round(df00to09["Price"].sum(),2)
@@ -332,9 +363,10 @@ totprice25to29 = round(df25to29["Price"].sum(),2)
 totprice30to34 = round(df30to34["Price"].sum(),2)
 totprice35to39 = round(df35to39["Price"].sum(),2)
 totprice40up = round(df40up["Price"].sum(),2)
+
+tprice = pd.DataFrame([totprice00to09,totprice10to14,totprice15to19,totprice20to24,totprice25to29,totprice30to34,totprice35to39,totprice40up])
+
 #Normalized Totals by gender
-
-
 
 
 
@@ -344,12 +376,216 @@ totprice40up = round(df40up["Price"].sum(),2)
 
 
 ```python
+
+df00to09 = dataframe.loc[dataframe["AgeGroups"]=="00-09",:]
+df10to14 = dataframe.loc[dataframe["AgeGroups"]=="10-14",:]
+df15to19 = dataframe.loc[dataframe["AgeGroups"]=="15-19",:]
+df20to24 = dataframe.loc[dataframe["AgeGroups"]=="20-24",:]
+df25to29 = dataframe.loc[dataframe["AgeGroups"]=="25-29",:]
+df30to34 = dataframe.loc[dataframe["AgeGroups"]=="30-34",:]
+df35to39 = dataframe.loc[dataframe["AgeGroups"]=="35-39",:]
+df40up = dataframe.loc[dataframe["AgeGroups"]=="40+",:]
+
+agegroupdata = pd.DataFrame(dataframe["AgeGroups"].value_counts()).reset_index().sort_values("index",ascending=True)
+#agegroupdata.columns = ["AgeGroups","Purchase Count","Average Purchase Price","Total Purchase Price","Normalized Totals"]
+agegroupdata.columns = ["AgeGroups","Purchase Count"]
+agegroupdata["Average Purchase Price"] = pprice
+agegroupdata["Total Purchase Price"] = tprice
+agegroupdata["Normalized Totals"] =""
+
+x = agegroupdata[["Total Purchase Price"]].values.astype(float)
+scaler=preprocessing.MinMaxScaler()
+xscale=scaler.fit_transform(x)
+agegroupdata["Normalized Totals"]=pd.DataFrame(xscale)
+agegroupdata
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>AgeGroups</th>
+      <th>Purchase Count</th>
+      <th>Average Purchase Price</th>
+      <th>Total Purchase Price</th>
+      <th>Normalized Totals</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>6</th>
+      <td>00-09</td>
+      <td>28</td>
+      <td>2.84</td>
+      <td>119.40</td>
+      <td>0.342241</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>10-14</td>
+      <td>35</td>
+      <td>3.08</td>
+      <td>197.25</td>
+      <td>1.000000</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>15-19</td>
+      <td>133</td>
+      <td>2.77</td>
+      <td>96.95</td>
+      <td>0.155132</td>
+    </tr>
+    <tr>
+      <th>0</th>
+      <td>20-24</td>
+      <td>336</td>
+      <td>2.98</td>
+      <td>83.46</td>
+      <td>0.070971</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>25-29</td>
+      <td>125</td>
+      <td>2.91</td>
+      <td>386.42</td>
+      <td>0.046702</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>30-34</td>
+      <td>64</td>
+      <td>2.91</td>
+      <td>978.77</td>
+      <td>0.032118</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>35-39</td>
+      <td>42</td>
+      <td>2.96</td>
+      <td>370.33</td>
+      <td>0.359635</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>40+</td>
+      <td>17</td>
+      <td>3.16</td>
+      <td>53.75</td>
+      <td>0.000000</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
 #Age breakdown
+df_minus_duplicate_names = dataframe.drop_duplicates(subset=["SN"])
 output_age_groups = pd.DataFrame(df_minus_duplicate_names["AgeGroups"].value_counts()).reset_index().sort_values("index").set_index("index")
 output_age_groups.columns = ["Count"]
-output_age_groups["% of players"] = output_age_groups["Count"]/totalplayers
+output_age_groups["% of players"] = output_age_groups["Count"]/totalplayers*100
 output_age_groups #OUTPUT
+
 ```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Count</th>
+      <th>% of players</th>
+    </tr>
+    <tr>
+      <th>index</th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>00-09</th>
+      <td>19</td>
+      <td>3.315881</td>
+    </tr>
+    <tr>
+      <th>10-14</th>
+      <td>23</td>
+      <td>4.013962</td>
+    </tr>
+    <tr>
+      <th>15-19</th>
+      <td>100</td>
+      <td>17.452007</td>
+    </tr>
+    <tr>
+      <th>20-24</th>
+      <td>259</td>
+      <td>45.200698</td>
+    </tr>
+    <tr>
+      <th>25-29</th>
+      <td>87</td>
+      <td>15.183246</td>
+    </tr>
+    <tr>
+      <th>30-34</th>
+      <td>47</td>
+      <td>8.202443</td>
+    </tr>
+    <tr>
+      <th>35-39</th>
+      <td>27</td>
+      <td>4.712042</td>
+    </tr>
+    <tr>
+      <th>40+</th>
+      <td>11</td>
+      <td>1.919721</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
 
 
 ```python
@@ -377,11 +613,137 @@ output_top_spenders #FINAL RESULT
 ```
 
 
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>SN</th>
+      <th>Purchase Count</th>
+      <th>Price</th>
+      <th>Average Purchase Price</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Undirrala66</td>
+      <td>5</td>
+      <td>17.06</td>
+      <td>3.41</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Saedue76</td>
+      <td>4</td>
+      <td>13.56</td>
+      <td>3.39</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Mindimnya67</td>
+      <td>4</td>
+      <td>12.74</td>
+      <td>3.18</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Haellysu29</td>
+      <td>3</td>
+      <td>12.73</td>
+      <td>4.24</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Eoda93</td>
+      <td>3</td>
+      <td>11.58</td>
+      <td>3.86</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
 ```python
 itemcounts = dataframe["Item ID"].value_counts().reset_index()
 itemcounts.columns= ["Item ID","Count"]
 itemcounts.head()
 ```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Item ID</th>
+      <th>Count</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>84</td>
+      <td>11</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>39</td>
+      <td>11</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>31</td>
+      <td>9</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>34</td>
+      <td>9</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>175</td>
+      <td>9</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
 
 
 ```python
@@ -408,6 +770,81 @@ output_most_popular #FINAL RESULT
 ```
 
 
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Item ID</th>
+      <th>Item Name</th>
+      <th>Price</th>
+      <th>Count</th>
+      <th>Total Purchase Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>39</td>
+      <td>Betrayal, Whisper of Grieving Widows</td>
+      <td>2.35</td>
+      <td>11</td>
+      <td>25.85</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>84</td>
+      <td>Arcane Gem</td>
+      <td>2.23</td>
+      <td>11</td>
+      <td>24.53</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>34</td>
+      <td>Retribution Axe</td>
+      <td>4.14</td>
+      <td>9</td>
+      <td>37.26</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>31</td>
+      <td>Trickster</td>
+      <td>2.07</td>
+      <td>9</td>
+      <td>18.63</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>13</td>
+      <td>Serenity</td>
+      <td>1.49</td>
+      <td>9</td>
+      <td>13.41</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
 ```python
 
 #* Identify the 5 most profitable items by total purchase value, then list (in a table):
@@ -425,3 +862,78 @@ sortprofit=profitdf.sort_values("Total Purchase Value",ascending=False).head()
 output_most_profit = pd.merge(sortprofit,itemcounts,on="Item ID",how="inner")
 output_most_profit #FINAL RESULT
 ```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Item ID</th>
+      <th>Item Name</th>
+      <th>Price</th>
+      <th>Total Purchase Value</th>
+      <th>Count</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>34</td>
+      <td>Retribution Axe</td>
+      <td>4.14</td>
+      <td>37.26</td>
+      <td>9</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>115</td>
+      <td>Spectral Diamond Doomblade</td>
+      <td>4.25</td>
+      <td>29.75</td>
+      <td>7</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>32</td>
+      <td>Orenmir</td>
+      <td>4.95</td>
+      <td>29.70</td>
+      <td>6</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>103</td>
+      <td>Singed Scalpel</td>
+      <td>4.87</td>
+      <td>29.22</td>
+      <td>6</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>107</td>
+      <td>Splitter, Foe Of Subtlety</td>
+      <td>3.61</td>
+      <td>28.88</td>
+      <td>8</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
