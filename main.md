@@ -1,11 +1,11 @@
 
 
 ```python
-##OBSERVED TREND 1:
+##OBSERVED TREND 1: This game is primarily played by males, and nearly half of the game's users are in their early 20s.
 
-##OBSERVED TREND 2:
+##OBSERVED TREND 2: With 780 total purchases, and 573 players that made a purchase, the vast majority of players made exactly one purchase.
 
-##OBSERVED TREND 3:
+##OBSERVED TREND 3: Players who make multiple purchases seem to favor the cheaper ones
 
 ```
 
@@ -315,17 +315,14 @@ totprice35to39 = round(df35to39["Price"].sum(),2)
 totprice40up = round(df40up["Price"].sum(),2)
 
 tprice = pd.DataFrame([totprice00to09,totprice10to14,totprice15to19,totprice20to24,totprice25to29,totprice30to34,totprice35to39,totprice40up])
-
 ```
 
 
 ```python
 agegroupdata = pd.DataFrame(dataframe["AgeGroups"].value_counts()).reset_index().sort_values("index",ascending=True)
-#agegroupdata.columns = ["AgeGroups","Purchase Count","Average Purchase Price","Total Purchase Price","Normalized Totals"]
 agegroupdata.columns = ["AgeGroups","Purchase Count"]
 agegroupdata["Average Purchase Price"] = pprice
-agegroupdata["Total Purchase Price"] = tprice
-agegroupdata["Normalized Totals"] =""
+agegroupdata["Total Purchase Price"] = agegroupdata["Average Purchase Price"] * agegroupdata["Purchase Count"]
 
 x = agegroupdata[["Total Purchase Price"]].values.astype(float)
 scaler=preprocessing.MinMaxScaler()
@@ -373,56 +370,56 @@ agegroupdata.set_index("AgeGroups")
       <th>00-09</th>
       <td>28</td>
       <td>2.84</td>
-      <td>119.40</td>
-      <td>0.342241</td>
+      <td>79.52</td>
+      <td>0.074507</td>
     </tr>
     <tr>
       <th>10-14</th>
       <td>35</td>
       <td>3.08</td>
-      <td>197.25</td>
-      <td>1.000000</td>
+      <td>107.80</td>
+      <td>0.139854</td>
     </tr>
     <tr>
       <th>15-19</th>
       <td>133</td>
       <td>2.77</td>
-      <td>96.95</td>
-      <td>0.155132</td>
+      <td>368.41</td>
+      <td>0.057073</td>
     </tr>
     <tr>
       <th>20-24</th>
       <td>336</td>
       <td>2.98</td>
-      <td>83.46</td>
-      <td>0.070971</td>
+      <td>1001.28</td>
+      <td>0.027228</td>
     </tr>
     <tr>
       <th>25-29</th>
       <td>125</td>
       <td>2.91</td>
-      <td>386.42</td>
-      <td>0.046702</td>
+      <td>363.75</td>
+      <td>0.332106</td>
     </tr>
     <tr>
       <th>30-34</th>
       <td>64</td>
       <td>2.91</td>
-      <td>978.77</td>
-      <td>0.032118</td>
+      <td>186.24</td>
+      <td>1.000000</td>
     </tr>
     <tr>
       <th>35-39</th>
       <td>42</td>
       <td>2.96</td>
-      <td>370.33</td>
-      <td>0.359635</td>
+      <td>124.32</td>
+      <td>0.327188</td>
     </tr>
     <tr>
       <th>40+</th>
       <td>17</td>
       <td>3.16</td>
-      <td>53.75</td>
+      <td>53.72</td>
       <td>0.000000</td>
     </tr>
   </tbody>
